@@ -8,6 +8,6 @@ defmodule AdventOfCode.Solutions.Y2021.S11Test do
       |> S11.parse_data()
       |> S11.solve!()
 
-    assert solution == "5934"
+    assert solution == "26984457539"
   end
 end
