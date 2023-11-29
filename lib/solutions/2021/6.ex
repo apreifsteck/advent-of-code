@@ -29,7 +29,7 @@ defmodule AdventOfCode.Solutions.Y2021.S6 do
     Finally, to find the life support rating, multiply the oxygen generator rating (23) by the CO2 scrubber rating (10) to get 230.
   """
   @behaviour AdventOfCode.Solution
-  @prior_sol AdventOfCode.get_prior_solution_module(__MODULE__)
+  @prior_sol AdventOfCode.Solutions.get_prior_solution_module(__MODULE__)
 
   alias AdventOfCode.DataFetcher
 

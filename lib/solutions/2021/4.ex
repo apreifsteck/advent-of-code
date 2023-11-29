@@ -30,7 +30,7 @@ defmodule AdventOfCode.Solutions.Y2021.S4 do
 
   @impl true
   def parse_data(data) do
-    AdventOfCode.get_prior_solution_module(__MODULE__).parse_data(data)
+    AdventOfCode.Solutions.get_prior_solution_module(__MODULE__).parse_data(data)
   end
 
   @impl true

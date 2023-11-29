@@ -9,12 +9,12 @@ defmodule AdventOfCode.Solutions.Y2021.S8 do
 
   @impl true
   def parse_data(data) do
-    AdventOfCode.get_prior_solution_module(__MODULE__).parse_data(data)
+    AdventOfCode.Solutions.get_prior_solution_module(__MODULE__).parse_data(data)
   end
 
   @impl true
   def solve!() do
-    AdventOfCode.get_day_from_sol(__MODULE__)
+    AdventOfCode.Solutions.get_day_from_sol(__MODULE__)
     |> DataFetcher.read_data()
     |> parse_data()
     |> solve!()
@@ -26,12 +26,6 @@ defmodule AdventOfCode.Solutions.Y2021.S8 do
     |> Enum.map(&Board.init/1)
     |> then(&solve!(draws, &1, nil))
   end
-
-  # def get_next_winner(number, boards) do
-  #   Enum.map(boards, &Board.mark(&1, num))
-  # end
-
-
 
   def solve!(_, [], last_winning_score), do: Integer.to_string(last_winning_score)
   def solve!([], _boards, last_winning_score), do: Integer.to_string(last_winning_score)

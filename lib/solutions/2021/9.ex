@@ -27,7 +27,7 @@ defmodule AdventOfCode.Solutions.Y2021.S9 do
 
   @impl true
   def solve!() do
-    AdventOfCode.get_day_from_sol(__MODULE__)
+    AdventOfCode.Solutions.get_day_from_sol(__MODULE__)
     |> DataFetcher.get_data()
     |> parse_data()
     |> solve!()

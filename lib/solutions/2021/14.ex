@@ -3,7 +3,7 @@ defmodule AdventOfCode.Solutions.Y2021.S14 do
 
   """
   @behaviour AdventOfCode.Solution
-  @prior_mod AdventOfCode.get_prior_solution_module(__MODULE__)
+  @prior_mod AdventOfCode.Solutions.get_prior_solution_module(__MODULE__)
 
   alias AdventOfCode.DataFetcher
 
@@ -14,7 +14,7 @@ defmodule AdventOfCode.Solutions.Y2021.S14 do
 
   @impl true
   def solve!() do
-    AdventOfCode.get_day_from_sol(__MODULE__)
+    AdventOfCode.Solutions.get_day_from_sol(__MODULE__)
     |> DataFetcher.read_data()
     |> parse_data()
     |> solve!()

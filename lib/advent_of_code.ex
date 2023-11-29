@@ -4,7 +4,7 @@ defmodule AdventOfCode do
   """
 
   def main(argv) do
-    %Optimus.ParseResult{args: %{puzzle_number: puzzle_number}} =
+    %Optimus.ParseResult{args: %{puzzle_number: puzzle_number}, options: opts} =
       Optimus.new!(
         name: "aoc_helper",
         about:
@@ -19,57 +19,21 @@ defmodule AdventOfCode do
             parser: :integer,
             default: 0
           ]
+        ],
+        options: [
+          year: [
+            value_name: "year",
+            short: "-y",
+            long: "--year",
+            help: "The year of the puzzle solution you want",
+            required: false,
+            parser: :integer,
+            default: NaiveDateTime.utc_now().year
+          ]
         ]
       )
       |> Optimus.parse!(argv)
 
-    get_solution(puzzle_number)
-  end
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> AdventOfCode.hello()
-      :world
-
-  """
-  def get_solution(day) do
-    year = NaiveDateTime.utc_now().year
-    year_module_name = String.to_existing_atom("Y#{year}")
-    solution_number_atom = String.to_existing_atom("S#{day}")
-
-    [__MODULE__, Solutions, year_module_name, solution_number_atom]
-    |> Module.safe_concat()
-    |> AdventOfCode.Solution.solve()
-  end
-
-  def get_prior_solution_module(module) do
-    {solution_header, _last} =
-      module
-      |> Module.split()
-      |> Enum.split(-1)
-
-    solution_header
-    |> Enum.join(".")
-    |> Module.safe_concat("S#{get_solution_number_from_module(module) - 1}")
-  end
-
-  defp get_solution_number_from_module(module) do
-    module
-    |> Module.split
-    |> Enum.reverse()
-    |> hd()
-    |> String.trim_leading("S")
-    |> String.to_integer()
-  end
-
-  def get_day_from_sol(module) do
-    module
-    |> get_solution_number_from_module()
-    |> Kernel./(2)
-    |> Float.round()
-    |> trunc
+    IO.puts(__MODULE__.Solutions.get_solution(puzzle_number, opts))
   end
 end

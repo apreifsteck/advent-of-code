@@ -1,0 +1,48 @@
+defmodule AdventOfCode.Solutions do
+  def get_solution(day, options \\ %{}) do
+    year = options[:year] || NaiveDateTime.utc_now().year
+
+    sol_module_list = [__MODULE__, "Y#{year}", "S#{day}"]
+
+    sol_module =
+      try do
+        Module.safe_concat(sol_module_list)
+      catch
+        :error, :badarg -> raise ArgumentError, "Solution module for day #{day} and year #{year} does not exist"
+      end
+
+    AdventOfCode.Solution.solve(sol_module)
+  end
+
+  def get_prior_solution_module(module) do
+    {solution_header, _last} =
+      module
+      |> Module.split()
+      |> Enum.split(-1)
+
+    solution_header
+    |> Enum.join(".")
+    |> Module.safe_concat("S#{get_solution_number_from_module(module) - 1}")
+  end
+
+  defp get_solution_number_from_module(module) do
+    module
+    |> Module.split()
+    |> Enum.reverse()
+    |> hd()
+    |> String.trim_leading("S")
+    |> String.to_integer()
+  end
+
+  @doc """
+  gets the integer day number from a module atom
+  """
+  @spec get_day_from_sol(module()) :: integer()
+  def get_day_from_sol(module) do
+    module
+    |> get_solution_number_from_module()
+    |> Kernel./(2)
+    |> Float.round()
+    |> trunc
+  end
+end
