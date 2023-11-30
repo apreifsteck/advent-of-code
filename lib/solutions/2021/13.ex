@@ -2,23 +2,14 @@ defmodule AdventOfCode.Solutions.Y2021.S13 do
   @moduledoc """
 
   """
-  @behaviour AdventOfCode.Solution
-
-  alias AdventOfCode.DataFetcher
+  use AdventOfCode.Solution
 
   @impl true
   def parse_data(data) do
     data
-    |> String.split(",")
-    |> Enum.map(&String.to_integer/1)
-  end
-
-  @impl true
-  def solve!() do
-    AdventOfCode.Solutions.get_day_from_sol(__MODULE__)
-    |> DataFetcher.read_data()
-    |> parse_data()
-    |> solve!()
+    |> Stream.flat_map(&String.split(&1, ","))
+    |> Stream.map(&String.to_integer/1)
+    |> Enum.into([])
   end
 
   @impl true
@@ -32,7 +23,7 @@ defmodule AdventOfCode.Solutions.Y2021.S13 do
   def median(data) do
     sorted_data = Enum.sort(data)
     len = Enum.count(data)
-    IO.inspect(len, label: "length:")
+    IO.inspect(len, label: "length")
     mid = Integer.floor_div(len, 2) - 1
 
     Enum.at(sorted_data, mid)

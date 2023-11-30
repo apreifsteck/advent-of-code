@@ -32,7 +32,7 @@ defmodule AdventOfCode.Solutions.Y2021.S7 do
   @impl true
   def solve!() do
     4
-    |> DataFetcher.read_data()
+    |> DataFetcher.get_data()
     |> parse_data()
     |> solve!()
   end
