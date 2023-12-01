@@ -30,7 +30,7 @@ defmodule AdventOfCode.Solution do
       @impl true
       def solve!() do
         AdventOfCode.Solutions.get_day_from_sol(__MODULE__)
-        |> AdventOfCode.DataFetcher.get_data()
+        |> AdventOfCode.DataFetcher.get_data(AdventOfCode.Solutions.get_year_from_module(__MODULE__))
         |> parse_data()
         |> solve!()
       end
@@ -40,7 +40,7 @@ defmodule AdventOfCode.Solution do
       @impl true
       unquote(impl)
 
-      defoverridable([solve!: 1, parse_data: 1])
+      defoverridable solve!: 1, parse_data: 1
     end
   end
 

@@ -8,7 +8,8 @@ defmodule AdventOfCode.Solutions do
       try do
         Module.safe_concat(sol_module_list)
       catch
-        :error, :badarg -> raise ArgumentError, "Solution module for day #{day} and year #{year} does not exist"
+        :error, :badarg ->
+          raise ArgumentError, "Solution module for day #{day} and year #{year} does not exist"
       end
 
     AdventOfCode.Solution.solve(sol_module)
@@ -25,16 +26,30 @@ defmodule AdventOfCode.Solutions do
     |> Module.safe_concat("S#{get_solution_number_from_module(module) - 1}")
   end
 
-  defp get_solution_number_from_module(module) do
-    module
-    |> Module.split()
-    |> Enum.reverse()
-    |> hd()
-    |> String.trim_leading("S")
-    |> String.to_integer()
+  defp get_sol_num_and_year_from_module(module) do
+    [day, year] =
+      module
+      |> Module.split()
+      |> Enum.reverse()
+      |> Enum.take(2)
+      |> Enum.map(&String.trim_leading(&1, "Y"))
+      |> Enum.map(&String.trim_leading(&1, "S"))
+      |> Enum.map(&String.to_integer/1)
+
+    {day, year}
   end
 
-  def get_year_from_module(module)
+  defp get_solution_number_from_module(mod) do
+    mod 
+    |> get_sol_num_and_year_from_module()
+    |> elem(0)
+  end
+
+  def get_year_from_module(mod) do
+    mod 
+    |> get_sol_num_and_year_from_module()
+    |> elem(1)
+  end
 
   @doc """
   gets the integer day number from a module atom
