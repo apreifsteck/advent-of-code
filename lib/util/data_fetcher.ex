@@ -1,11 +1,22 @@
 defmodule AdventOfCode.DataFetcher do
-  def get_data(day) when is_integer(day), do: get_data(Integer.to_string(day))
+  def get_data(day, year) do
+    url = "https://adventofcode.com/#{inspect(year)}/day/#{inspect(day)}/input"
+    cookie = System.fetch_env!("AOC_COOKIE")
 
-  def get_data(day) when is_binary(day) do
-    File.cwd!()
-    |> Path.join(relative_file_name(day))
-    |> File.stream!()
+    filename =
+      File.cwd!()
+      |> Path.join(relative_file_name(day, year))
+
+    if not File.exists?(filename) do
+      Req.get!(url,
+        headers: [{"Cookie", cookie}],
+        into: File.stream!(filename),
+        compressed: false
+      )
+    end
+
+    File.stream!(filename)
   end
 
-  defp relative_file_name(day), do: "problem_input/#{day}.txt"
+  defp relative_file_name(day, year), do: "problem_input/#{year}/#{day}.txt"
 end

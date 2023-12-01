@@ -34,6 +34,8 @@ defmodule AdventOfCode.Solutions do
     |> String.to_integer()
   end
 
+  def get_year_from_module(module)
+
   @doc """
   gets the integer day number from a module atom
   """
