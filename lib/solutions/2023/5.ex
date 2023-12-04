@@ -29,41 +29,66 @@ defmodule AdventOfCode.Solutions.Y2023.S5 do
   What is the sum of all of the part numbers in the engine schematic?
   """
 
-  def solve!(data) do
-    data
+  def solve!({data, domain}) do
+    data 
+      |> Enum.join("")
+      |> String.to_charlist()
+      |> Enum.with_index()
+      |> Enum.chunk_by(fn {codepoint, index} -> codepoint in ?0..?9 end)
+      |> Enum.filter(fn [{codepoint, _index} | _ ] -> codepoint in ?0..?9 end)
+      |> Enum.map(fn chunk -> 
+        {_, first_index} = hd(chunk)
+        {_, last_index} = List.last(chunk)
+         number = Enum.map(chunk, &elem(&1, 0)) |> IO.chardata_to_string() |> String.to_integer()
+      {number, {first_index, last_index}}
+      end)
+      |> Enum.filter(&touches_domain?(domain, elem(&1, 1)))
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.sum()
+  end
+
+  defp touches_domain?(domain, {start, final}) do
+    Enum.at(domain, start) == 1 or Enum.at(domain, final) == 1
   end
 
   def parse_data(data) do
-    domain = build_empty_domain(data)
-    get_symbol_indexes(data)
+    listified_data = Enum.to_list(data) 
+    bounds = domain_bounds(listified_data)
+    domain = build_empty_domain(bounds)
 
+    {listified_data, listified_data
+    |> get_symbol_domain_indexes(bounds)
+    |> Enum.reduce(domain, &List.replace_at(&2, &1, 1))}
   end
 
-  defp get_symbol_indexes(data) do
-    data
-    |> Enum.map(&String.to_charlist/1)
-    |> Enum.map(&Enum.with_index/1)
-    |> Enum.map(&Enum.filter(&1, fn {code_point, _index} -> code_point not in ?0..?9 and code_point != ?. end))
-    |> Enum.with_index()
-    |> dbg()
+  defp get_symbol_domain_indexes(data, bounds) do
+    for {row, row_ind} <- Enum.with_index(data), 
+        {char, col_ind} <- row |> String.to_charlist() |> Enum.with_index(),
+        char not in ?0..?9 and char != ?. do
+          {char, {row_ind, col_ind}}
+    end
+    |> Enum.flat_map(fn {_char, {row, col}} -> get_domain_from_indexes(row, col, bounds) end)
+    |> MapSet.new()
   end
 
-  defp get_domain_from_indexes(row, col, {num_rows, num_cols}) do
-    range = [-1, 0, 1]
-    for row_offset <- range, col_offset <- range do
-      (((row + row_offset) * num_rows) + (col + col_offset))
-      |> min((num_rows - 1) * (num_cols - 1))
+  def get_domain_from_indexes(row, col, {num_rows, num_cols}) do
+    range = -1..1
+    for row_offset <- range, col_offset <- range, between_bounds?(row + row_offset, num_rows) and between_bounds?(col + col_offset, num_cols) do
+      (((row + row_offset) * num_cols) + (col + col_offset))
+      |> min((num_rows * num_cols) - 1)
       |> max(0)
     end
   end
 
-  defp build_empty_domain(data) do
-    lines = length(data)
-    width = data |> hd() |> String.length()
-    for _ <- 1..lines, _ <- 1..width, do: 0
+  defp build_empty_domain({num_rows, num_cols}) do
+    for _ <- 1..num_rows, _ <- 1..num_cols, do: 0
   end
 
+  defp between_bounds?(x, top_bound), do: x < top_bound and x >= 0
+
   defp domain_bounds(data) do
-    
+    lines = length(data)
+    width = data |> hd() |> String.length()
+    {lines, width}
   end
 end

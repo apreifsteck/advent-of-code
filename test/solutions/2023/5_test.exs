@@ -17,6 +17,21 @@ defmodule AdventOfCode.Solutions.Y2023.S5Test do
               |> String.split("\n")
               |> Enum.reject(&(&1 == ""))
 
+
+  describe "get_domain_from_indexes" do
+    test "works" do
+      # top mid, one row
+      assert [4, 5, 6] = Solution.get_domain_from_indexes(0, 5, {1, 10}) 
+      # top mid, two rows
+      assert [4, 5, 6, 14, 15, 16] = Solution.get_domain_from_indexes(0, 5, {2, 10}) 
+      # top_right, two rows
+      assert [8, 9, 18, 19] = Solution.get_domain_from_indexes(0, 9, {2, 10})
+      # mid_left, three rows
+      assert [0, 1, 10, 11, 20, 21] = Solution.get_domain_from_indexes(1, 0, {3, 10})
+      # mid, three rows
+      assert [4, 5, 6, 14, 15, 16, 24, 25, 26] = Solution.get_domain_from_indexes(1, 5, {3, 10})
+    end
+  end
   describe "parse_data/1" do
     test "accepts garbage" do
       # assert [
@@ -28,6 +43,10 @@ defmodule AdventOfCode.Solutions.Y2023.S5Test do
       assert String.length(input) == Solution.parse_data([input]) |> length() |> dbg()
 
       # assert [] = Solution.parse_data([])
+    end
+
+    test "works" do
+      @test_input |> Solution.parse_data() |> dbg()
     end
 
     # test "multiple symbols in a row are each their own part" do
