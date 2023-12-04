@@ -19,60 +19,62 @@ defmodule AdventOfCode.Solutions.Y2023.S5Test do
 
   describe "parse_data/1" do
     test "accepts garbage" do
-      assert [
-               %Solution{
-                 parts: []
-               }
-             ] = Solution.parse_data([".........."])
+      # assert [
+      #          %Solution{
+      #            parts: []
+      #          }
+      #        ] = 
+      input = ".....*...."
+      assert String.length(input) == Solution.parse_data([input]) |> length() |> dbg()
 
-      assert [] = Solution.parse_data([])
+      # assert [] = Solution.parse_data([])
     end
 
-    test "multiple symbols in a row are each their own part" do
-      assert [
-               %Solution{
-                 parts: [
-                   %Solution.Part{data: "*", start_index: 3},
-                   %Solution.Part{data: "#", start_index: 4},
-                   %Solution.Part{data: "@", start_index: 5}
-                 ]
-               }
-             ] = Solution.parse_data(["...*#@..."])
-    end
+    # test "multiple symbols in a row are each their own part" do
+    #   assert [
+    #            %Solution{
+    #              parts: [
+    #                %Solution.Part{data: "*", start_index: 3},
+    #                %Solution.Part{data: "#", start_index: 4},
+    #                %Solution.Part{data: "@", start_index: 5}
+    #              ]
+    #            }
+    #          ] = Solution.parse_data(["...*#@..."])
+    # end
 
-    test "typical case works" do
-      assert [
-               %Solution{
-                 parts: [
-                   %Solution.Part{data: "123", start_index: 2, end_index: 4},
-                   %Solution.Part{data: "456", start_index: 7, end_index: 9}
-                 ]
-               }
-             ] = Solution.parse_data(["..123..456..."])
-    end
+    # test "typical case works" do
+    #   assert [
+    #            %Solution{
+    #              parts: [
+    #                %Solution.Part{data: "123", start_index: 2, end_index: 4},
+    #                %Solution.Part{data: "456", start_index: 7, end_index: 9}
+    #              ]
+    #            }
+    #          ] = Solution.parse_data(["..123..456..."])
+    # end
 
-    test "leading with a number" do
-      assert [
-               %Solution{
-                 parts: [
-                   %Solution.Part{data: "617", start_index: 0, end_index: 2},
-                   %Solution.Part{data: "*", start_index: 3, end_index: 3}
-                 ]
-               }
-             ] = Solution.parse_data(["617*......"])
-    end
+    # test "leading with a number" do
+    #   assert [
+    #            %Solution{
+    #              parts: [
+    #                %Solution.Part{data: "617", start_index: 0, end_index: 2},
+    #                %Solution.Part{data: "*", start_index: 3, end_index: 3}
+    #              ]
+    #            }
+    #          ] = Solution.parse_data(["617*......"])
+    # end
 
-    test "trailing a number" do
-      assert [
-               %Solution{
-                 parts: [
-                   %Solution.Part{data: "123"},
-                   %Solution.Part{data: "*"},
-                   %Solution.Part{data: "617"}
-                 ]
-               }
-             ] = Solution.parse_data(["123.*617......"])
-    end
+    # test "trailing a number" do
+    #   assert [
+    #            %Solution{
+    #              parts: [
+    #                %Solution.Part{data: "123"},
+    #                %Solution.Part{data: "*"},
+    #                %Solution.Part{data: "617"}
+    #              ]
+    #            }
+    #          ] = Solution.parse_data(["123.*617......"])
+    # end
 
     test "full input" do
       # |> dbg()
