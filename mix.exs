@@ -24,6 +24,7 @@ defmodule AdventOfCode.MixProject do
     [
       {:benchee, "~> 1.0", only: :dev},
       {:optimus, "~> 0.2"},
+      {:typed_struct, "~> 0.3"},
       {:req, ">= 0.4.0"}
     ]
   end
