@@ -43,10 +43,9 @@ use AdventOfCode.Solution, use_prior_solution: true
   end
 
   defp get_num_cards(0, 0, _cards_for_card), do: 0
-  defp get_num_cards(0, index, _), do: 0
+  defp get_num_cards(0, _index, _), do: 0
   defp get_num_cards(num_matches, index, cards_for_card) do
     range = (index - num_matches) .. index - 1
-    dbg(range)
     Map.take(cards_for_card, Range.to_list(range))
     |> Map.values()
     |> Enum.sum()

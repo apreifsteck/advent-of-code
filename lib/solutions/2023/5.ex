@@ -34,7 +34,7 @@ defmodule AdventOfCode.Solutions.Y2023.S5 do
       |> Enum.join("")
       |> String.to_charlist()
       |> Enum.with_index()
-      |> Enum.chunk_by(fn {codepoint, index} -> codepoint in ?0..?9 end)
+      |> Enum.chunk_by(fn {codepoint, _index} -> codepoint in ?0..?9 end)
       |> Enum.filter(fn [{codepoint, _index} | _ ] -> codepoint in ?0..?9 end)
       |> Enum.map(fn chunk -> 
         {_, first_index} = hd(chunk)

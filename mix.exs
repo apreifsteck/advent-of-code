@@ -23,6 +23,7 @@ defmodule AdventOfCode.MixProject do
   defp deps do
     [
       {:benchee, "~> 1.0", only: :dev},
+      {:libgraph, "~> 0.16.0"},
       {:optimus, "~> 0.2"},
       {:typed_struct, "~> 0.3"},
       {:req, ">= 0.4.0"}
