@@ -43,15 +43,29 @@ defmodule AdventOfCode.Solutions.Y2023.S10Test do
  
   describe "solve!/1" do
     test "works" do
-      assert nil = @test_input |> Solution.parse_data() |> Solution.solve!()
+      g = @test_input |> Solution.parse_data() |> Solution.solve!()
+      # [
+      #   {{60, 96}, {56, 92}},
+      #   {{56, 59}, {93, 96}},
+      #   {{56, 92}, {56, 69}},
+      #   {{56, 92}, {70, 92}},
+      #   {{93, 96}, {93, 96}},
+      #   {{56, 69}, {55, 68}},
+      #   {{70, 92}, {70, 92}}
+      # ]
+      # |> Enum.each(fn {v1, v2} -> assert Graph.edge(g, v1, v2) end)
+      g
+      |> Graph.reachable([{79, 79 + 13}])
+      |> Enum.filter(&(Graph.out_degree(g, &1) == 0))
+      |> dbg()
     end
   end
 
   describe "get_interval_mappings_for_interval/1" do
     test "detects a split" do
-      assert [{56, 69}, {70, 92}] = Solution.get_interval_mappings_for_interval({56, 92}, [
-          {0, 0},
-          {1, 69}
+      assert [{{56, 69}, {55, 68}}, {{70, 92}, {70, 92}}] = Solution.get_interval_mappings_for_interval({56, 92}, [
+          {{0, 0}, {69, 69}},
+          {{1, 69}, {0, 68}}
         ])
     end
 

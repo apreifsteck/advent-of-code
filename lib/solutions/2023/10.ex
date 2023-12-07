@@ -19,20 +19,29 @@ defmodule AdventOfCode.Solutions.Y2023.S10 do
   def solve!({seeds, maps}) do
     # Since the interpretation of the input has changed a bit, we will need to do some additional massaging
     # of the input
-    seed_ranges = get_seed_ranges(seeds)
+    maps = parse(maps)
+    seed_ranges = get_seed_ranges(seeds) 
+    |> hd() 
+    |> List.wrap()
+    |> Enum.flat_map(&get_interval_mappings_for_interval(&1, hd(maps)))
+
+    maps = [seed_ranges | tl(maps)] |> dbg()
+
+    compute_interval_mappings(maps)
+    # |> dbg()
     # After this data will have the format of [{{s_start, s_end}, {d_start, d_end}}],
     # where s is source and starts with location, and d is destination and starts with humidity
     # so we're traversing the mappings backwards now  
-    maps = invert(maps)
+    # get_interval_mappings_for_interval()
+    # seed_ranges
+    # |> Enum.flat_map(&get_interval_mappings_for_interval(&1, hd(maps), fn i, _ -> i end))
+    # |> add_edge_set(Graph.new())
+    # |> dbg()
+    # |> then(&compute_interval_mappings(maps, &1))
 
     # starting with the intervals on the locations we're going to map those to other intervals
     # for each map in turn
-    # dbg(maps)
-
-    test = maps |> hd() |> hd() |> dbg()
-    # g = Graph.new()
-
-    compute_interval_mappings(maps) |> dbg()
+    # compute_interval_mappings(maps)
 
     # For all edge pairs in the locations
     # 1. Add edge pair ({a, b}) to the graph. 
@@ -50,48 +59,64 @@ defmodule AdventOfCode.Solutions.Y2023.S10 do
   end
 
   def compute_interval_mappings([current_map, next | rest], g) do
+    # add source-destination key pairs to the graph
     updated_graph = add_edge_set(current_map, g)
-    possible_intervals_set = Enum.map(next, &elem(&1, 0))
 
-    current_map
-    # get destination intervals
-    |> Enum.map(&elem(&1, 1))
-    # fan out sub intervals
-    |> Enum.map(&get_interval_mappings_for_interval(&1, possible_intervals_set))
-    |> dbg()
-    # get destination intervals for each sub interval
+    current_intervals = Enum.map(current_map, &elem(&1, 1))
+    # fan out sub intervals mappings for the current intervals
+    sub_intervals = Enum.map(current_intervals, &get_interval_mappings_for_interval(&1, next)) |> dbg()
 
-    # |> Enum.
+    updated_graph =
+      current_intervals
+      # the sub intervals contain the intervals that the current 
+      |> Enum.zip(sub_intervals)
+      |> Enum.reduce(updated_graph, fn {source_interval, list_of_trasition_intervals}, graph ->
+        list_of_trasition_intervals
+        |> Enum.map(&elem(&1, 0))
+        |> Enum.reduce(graph, &Graph.add_edge(&2, source_interval, &1))
+      end)
+
+    # |> dbg()
+
     # recurse down fanned out paths
-    # |> Enum.reduce(updated_graph, &compute_interval_mappings([next | rest], &2))
+    compute_interval_mappings([List.flatten(sub_intervals) | rest], updated_graph)
   end
 
   defp add_edge_set(map, g) do
-      Enum.reduce(map, g, fn {source_interval, dest_interval}, graph ->
-        Graph.add_edge(graph, source_interval, dest_interval)
-      end)
+    Enum.reduce(map, g, fn {source_interval, dest_interval}, graph ->
+      Graph.add_edge(graph, source_interval, dest_interval)
+    end)
   end
 
-  def get_interval_mappings_for_interval(current_interval, list_of_intervals) do
+  def get_interval_mappings_for_interval(current_interval, list_of_intervals, shifter \\ &translate_interval/2) do
     # find the interval in the list (I_b) that corresponds to the start of the given interval (I_a)
     # find where I_b ends.
     # If I_a ends before I_b, we return a single interval of {I_b start, I_b start + len(I_a)}
     # If I_a ends after I_b, we return a list of intervals: [{I_b start, I_b end}, get_interval_mappings_for_interval({I_b end (+1?), I_a end}, list_of_intervals)]
     {current_start, current_end} = current_interval
 
-    {s_start, s_end} =
-      Enum.find(list_of_intervals, current_interval, fn {s_start, s_end} = thing ->
+    {{s_start, s_end} = source_interval, {d_start, d_end} = dest_interval} =
+      Enum.find(list_of_intervals, {current_interval, current_interval}, fn {{s_start, s_end}, _} =
+                                                                              thing ->
         current_start >= s_start and current_start <= s_end
       end)
 
+    shift = find_shift(source_interval, dest_interval)
+
     if current_end <= s_end do
-      [current_interval]
+      [{current_interval, shifter.(current_interval, shift)}]
     else
+      interval = {current_start, s_end}
+
       [
-        {current_start, s_end}
+        {interval, shifter.(interval, shift)}
         | get_interval_mappings_for_interval({s_end + 1, current_end}, list_of_intervals)
       ]
     end
+  end
+
+  defp find_shift(source_interval, dest_interval) do
+    elem(dest_interval, 0) - elem(source_interval, 0)
   end
 
   defp translate_interval({start, finish}, shift), do: {start + shift, finish + shift}
@@ -99,20 +124,19 @@ defmodule AdventOfCode.Solutions.Y2023.S10 do
   defp get_seed_ranges(seeds) do
     seeds
     |> Enum.chunk_every(2)
-    |> Enum.map(fn [start_range, end_range] -> {start_range, end_range} end)
+    |> Enum.map(fn [start_range, range_len] -> {start_range, start_range + range_len - 1} end)
   end
 
-  defp invert(maps) do
+  defp parse(maps) do
     maps
     |> Enum.map(fn list_of_ranges ->
-      # dbg(list_of_ranges)
-
       Enum.map(list_of_ranges, fn {source_range, destination_range_start} ->
         {source_range_start, source_range_end} = source_range
         destination_range_end = destination_range_start + (source_range_end - source_range_start)
-        {{destination_range_start, destination_range_end}, source_range}
+        {source_range, {destination_range_start, destination_range_end}}
       end)
     end)
-    |> Enum.reverse()
+
+    # |> Enum.reverse()
   end
 end
