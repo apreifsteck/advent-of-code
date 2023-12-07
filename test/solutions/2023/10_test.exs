@@ -48,9 +48,19 @@ defmodule AdventOfCode.Solutions.Y2023.S10Test do
   end
 
   describe "get_interval_mappings_for_interval/1" do
-    assert [{56, 69}, {70, 92}] = Solution.get_interval_mappings_for_interval({56, 92}, [
-        {0, 0},
-        {1, 69}
+    test "detects a split" do
+      assert [{56, 69}, {70, 92}] = Solution.get_interval_mappings_for_interval({56, 92}, [
+          {0, 0},
+          {1, 69}
+        ])
+    end
+
+    test "passes through when required" do
+      assert [{55, 67}] = Solution.get_interval_mappings_for_interval({55, 67}, [
+       {45, 67},
+        {81, 99},
+        {68, 80}
       ])
+    end
   end
 end
