@@ -90,6 +90,7 @@ defmodule Mix.Tasks.SolutionGenerator do
     @test_input \"\"\"
                 \"\"\"
                 |> String.split("\\n")
+                |> Enum.reject(& &1 == "")
 
   <%= require Integer; if @sol_number |> String.to_integer() |> Integer.is_odd() do%>
     describe "parse_data/1" do
