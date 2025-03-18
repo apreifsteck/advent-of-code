@@ -109,9 +109,8 @@ defmodule Mix.Tasks.SolutionGenerator do
 
   Mix.Generator.embed_template(:solution, """
   defmodule AdventOfCode.Solutions.Y<%= @year %>.S<%= @sol_number %> do
-  <%= require Integer; if @sol_number |> String.to_integer() |> Integer.is_odd() do%>use AdventOfCode.Solution
-  <% else %>use AdventOfCode.Solution, use_prior_solution: true
-  <% end %> 
+    <%= require Integer; if @sol_number |> String.to_integer() |> Integer.is_odd() do%>use AdventOfCode.Solution
+    <% else %>use AdventOfCode.Solution, use_prior_solution: true<% end %> 
     @moduledoc \"\"\"
     \"\"\"
 
@@ -122,8 +121,7 @@ defmodule Mix.Tasks.SolutionGenerator do
   <%= require Integer; if @sol_number |> String.to_integer() |> Integer.is_odd() do%>
     def parse_data(data) do
       data
-    end
-  <% end %> 
+    end<% end %> 
   end
   """)
 end

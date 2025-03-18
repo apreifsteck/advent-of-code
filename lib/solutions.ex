@@ -1,16 +1,16 @@
 defmodule AdventOfCode.Solutions do
-  @spec get_solution(day :: integer(), [year: integer()] | nil) :: integer()
-  def get_solution(day, options \\ %{}) do
+  @spec get_solution(solution_number :: integer(), [year: integer()] | nil) :: integer()
+  def get_solution(solution_number, options \\ %{}) do
     year = options[:year] || NaiveDateTime.utc_now().year
 
-    sol_module_list = [__MODULE__, "Y#{year}", "S#{day}"]
+    sol_module_list = [__MODULE__, "Y#{year}", "S#{solution_number}"]
 
     sol_module =
       try do
         Module.safe_concat(sol_module_list)
       catch
         :error, :badarg ->
-          raise ArgumentError, "Solution module for day #{day} and year #{year} does not exist"
+          raise ArgumentError, "Solution module for day #{solution_number} and year #{year} does not exist"
       end
 
     AdventOfCode.Solution.solve(sol_module)

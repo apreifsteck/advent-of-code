@@ -1,4 +1,5 @@
 defmodule Mix.Tasks.Solve do
+  {:ok, _} = Application.ensure_all_started(:req)
   @shortdoc "Runs the solution for the given day and year"
   use Mix.Task
   require Mix.Generator
