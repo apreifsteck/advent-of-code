@@ -1,4 +1,4 @@
-defmodule AdventOfCode.Solutions.Y2023.S5 do
+defmodule AdventOfCode.Solutions.Y2024.S5 do
 use AdventOfCode.Solution
  
   @moduledoc """

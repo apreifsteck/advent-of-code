@@ -67,14 +67,14 @@ defmodule Mix.Tasks.SolutionGenerator do
     end
   end
 
-  defp template_for(["lib" | rest]) do
-    sol_number = rest |> List.last() |> sol_num_from_file_name()
-    solution_template(sol_number: sol_number)
+  defp template_for(["lib", _, year, sol_file]) do
+    sol_number = sol_num_from_file_name(sol_file)
+    solution_template(sol_number: sol_number, year: year)
   end
 
-  defp template_for(["test" | rest]) do
-    sol_number = rest |> List.last() |> sol_num_from_file_name()
-    test_template(sol_number: sol_number)
+  defp template_for(["test", _, year, sol_file]) do
+    sol_number = sol_num_from_file_name(sol_file)
+    test_template(sol_number: sol_number, year: year)
   end
 
   defp sol_num_from_file_name(filename) do
@@ -83,9 +83,9 @@ defmodule Mix.Tasks.SolutionGenerator do
   end
 
   Mix.Generator.embed_template(:test, """
-  defmodule AdventOfCode.Solutions.Y2023.S<%= @sol_number %>Test do
+  defmodule AdventOfCode.Solutions.Y<%= @year %>.S<%= @sol_number %>Test do
     use ExUnit.Case, asnyc: true
-    alias AdventOfCode.Solutions.Y2023.S<%= @sol_number %>, as: Solution
+    alias AdventOfCode.Solutions.Y<%= @year %>.S<%= @sol_number %>, as: Solution
 
     @test_input \"\"\"
                 \"\"\"
@@ -108,7 +108,7 @@ defmodule Mix.Tasks.SolutionGenerator do
   """)
 
   Mix.Generator.embed_template(:solution, """
-  defmodule AdventOfCode.Solutions.Y2023.S<%= @sol_number %> do
+  defmodule AdventOfCode.Solutions.Y<%= @year %>.S<%= @sol_number %> do
   <%= require Integer; if @sol_number |> String.to_integer() |> Integer.is_odd() do%>use AdventOfCode.Solution
   <% else %>use AdventOfCode.Solution, use_prior_solution: true
   <% end %> 
