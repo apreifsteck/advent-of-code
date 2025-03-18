@@ -1,4 +1,5 @@
 defmodule AdventOfCode.Solutions do
+  @spec get_solution(day :: integer(), [year: integer()] | nil) :: integer()
   def get_solution(day, options \\ %{}) do
     year = options[:year] || NaiveDateTime.utc_now().year
 
@@ -40,24 +41,30 @@ defmodule AdventOfCode.Solutions do
   end
 
   defp get_solution_number_from_module(mod) do
-    mod 
+    mod
     |> get_sol_num_and_year_from_module()
     |> elem(0)
   end
 
   def get_year_from_module(mod) do
-    mod 
+    mod
     |> get_sol_num_and_year_from_module()
     |> elem(1)
   end
 
   @doc """
-  gets the integer day number from a module atom
+  gets the integer day number from variable sources, including
+  module names or bare integers
   """
   @spec get_day_from_sol(module()) :: integer()
-  def get_day_from_sol(module) do
+  def get_day_from_sol(module) when is_atom(module) do
     module
     |> get_solution_number_from_module()
+    |> get_day_from_sol()
+  end
+
+  def get_day_from_sol(sol) when is_integer(sol) do
+    sol
     |> Kernel./(2)
     |> Float.round()
     |> trunc

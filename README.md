@@ -2,8 +2,11 @@
 A helper framework for building and generating Advent
 of code solutions and getting their outputs
 
-## Running
-To generate the binary command line program to run,
-use the mix task `escript.build`
+## Setup
+1. Log in to advent of code
+2. Open dev tools > Application > Cookies > session
+3. save session cookie to AOC_COOKIE env var
 
-run the program with `./advent_of_code <solution_number>` for the current year
+## Running
+1. Use `mix solution_generator <day> [year]` to generate a skeleton solution for a new day
+2. Use `mix solve <solution_number> [-y year]` to output the given solution
