@@ -84,7 +84,7 @@ defmodule Mix.Tasks.SolutionGenerator do
 
   Mix.Generator.embed_template(:test, """
   defmodule AdventOfCode.Solutions.Y<%= @year %>.S<%= @sol_number %>Test do
-    use ExUnit.Case, asnyc: true
+    use ExUnit.Case, async: true
     alias AdventOfCode.Solutions.Y<%= @year %>.S<%= @sol_number %>, as: Solution
 
     @test_input \"\"\"

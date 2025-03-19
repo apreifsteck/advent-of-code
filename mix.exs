@@ -26,7 +26,8 @@ defmodule AdventOfCode.MixProject do
       {:libgraph, "~> 0.16.0"},
       {:optimus, "~> 0.2"},
       {:typed_struct, "~> 0.3"},
-      {:req, ">= 0.4.0"}
+      {:req, ">= 0.4.0"},
+      {:nx, "~> 0.9"}
     ]
   end
 end
